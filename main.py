@@ -1,6 +1,7 @@
 from graph import Graph
 from queue2050 import Queue
 import math
+import unittest
 
 def bfs(g,start):
     result = []
@@ -90,17 +91,20 @@ def findSolution(a, b, goal_amount):
     if goal_amount % c != 0:
         return None
 
+    # a) building the graph as needed
     g = build_graph(a, b)
     
+    # b) performing BFS
     id = bfs_find(g, g.getVertex((0, 0)), goal_amount)
     if id == None:
         return []
 
+    # c) navigating the result of BFS to return the solution path as Python list of tuples
     result = path2root(g.getVertex(id))
 
     return result
 
-
+# return a list of tuples that are possible states that be reached from the current state (denoted by curr_state )
 def getEligibleStates(a, b, curr_state):
     g = build_graph(a, b)
 
@@ -116,6 +120,18 @@ def main():
     result = getEligibleStates(3, 4, (3, 3))
     print(result)
 
+class adjGraphTests(unittest.TestCase):
+    def setUp(self):
+        pass
+
+    def testFindSolution(self):
+        result = findSolution(3, 4, 2)
+        self.assertEqual(result, [(2, 4), (3, 3), (0, 3), (3, 0), (0, 0)])
+
+    def testEligibleStates(self):
+        result = getEligibleStates(3, 4, (3, 3))
+        self.assertEqual(result, [(3, 3), (3, 4), (2, 4)])
 
 if __name__ == "__main__":
     main()
+    unittest.main()

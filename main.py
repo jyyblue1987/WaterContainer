@@ -114,7 +114,7 @@ def getEligibleStates(a, b, curr_state):
 
 
 def main():
-    result = findSolution(3, 4, 2)
+    result = findSolution(5, 8, 2)
     print(result)
 
     result = getEligibleStates(3, 4, (3, 3))

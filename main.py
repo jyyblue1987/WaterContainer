@@ -3,6 +3,7 @@ from queue2050 import Queue
 import math
 
 def bfs(g,start):
+    result = []
     start.setDistance(0)
     start.setPred(None)
     vertQueue = Queue()
@@ -16,6 +17,10 @@ def bfs(g,start):
                 nbr.setPred(currentVert)
                 vertQueue.enqueue(nbr)
         currentVert.setColor('black')
+        result.append(currentVert.getId())
+
+    return result
+        
 
 def bfs_find(g,start, goal):
     start.setDistance(0)
@@ -25,7 +30,7 @@ def bfs_find(g,start, goal):
     while (vertQueue.size() > 0):
         currentVert = vertQueue.dequeue()
         id = currentVert.id
-        if id[0] == goal or id[1] == goal:
+        if id[0] == goal or id[1] == goal:  # reach to goal state
             return id
 
         for nbr in currentVert.getConnections():
@@ -50,12 +55,7 @@ def path2root(y):
 
     return result
 
-def findSolution(a, b, goal_amount):    
-    c = math.gcd(a, b)
-    remain = goal_amount % c
-    if goal_amount % c != 0:
-        return None
-
+def build_graph(a, b):
     g = Graph()
 
     vertex_list = []
@@ -82,6 +82,15 @@ def findSolution(a, b, goal_amount):
             amount = min(a - u[0], u[1])
             g.addEdge(u, (u[0] + amount, u[1] - amount))
 
+    return g
+
+def findSolution(a, b, goal_amount):    
+    c = math.gcd(a, b)
+    remain = goal_amount % c
+    if goal_amount % c != 0:
+        return None
+
+    g = build_graph(a, b)
     
     id = bfs_find(g, g.getVertex((0, 0)), goal_amount)
     if id == None:
@@ -93,12 +102,20 @@ def findSolution(a, b, goal_amount):
 
 
 def getEligibleStates(a, b, curr_state):
-    pass
+    g = build_graph(a, b)
+
+    result = bfs(g, g.getVertex(curr_state))
+    
+    return result
 
 
 def main():
     result = findSolution(3, 4, 2)
     print(result)
+
+    result = getEligibleStates(3, 4, (3, 3))
+    print(result)
+
 
 if __name__ == "__main__":
     main()
